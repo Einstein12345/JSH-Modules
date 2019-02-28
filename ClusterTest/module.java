@@ -14,7 +14,7 @@ public class module extends Module {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "ClusterTest";
+		return "ClusterTest"; 
 	}
 
 	@Override
