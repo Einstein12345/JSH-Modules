@@ -45,7 +45,7 @@ public class module extends Module {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "AudioController";
+		return "AudioController"; 
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class module extends Module {
 			}
 			Thread t = new Thread(new Runnable() {
 				public void run() {
-					log.log("Starting AudioIn Server...");
+					getLogger().log("Starting AudioIn Server...");
 					while (ok) {
 						try {
 							Socket sa = audio.accept();
@@ -77,13 +77,13 @@ public class module extends Module {
 			});
 			t.setName("[AudioController] AudioIn");
 			t.start();
-			log.log("Starting Client Connection Server...");
+			getLogger().log("Starting Client Connection Server...");
 			while (true) {
 				try {
 					s = ss.accept();
 				} catch (Exception e) {
 					e.printStackTrace();
-					log.log("Failed to accept a connection! ");
+					getLogger().log("Failed to accept a connection! ");
 					return;
 				}
 

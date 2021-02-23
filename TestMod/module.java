@@ -21,7 +21,7 @@ public class module extends Module {
 	public void run() {
 		// TODO Auto-generated method stub
 		NetworkConnectivity.module m = new NetworkConnectivity.module();
-		log.log(m.getName());
+		getLogger().log(m.getName());
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class module extends Module {
 
 	@Override
 	public void onEnable() {
-		log.log("TestModule Enabled!");
+		getLogger().log("TestModule Enabled!");
 	}
 
 	@Override

@@ -26,8 +26,8 @@ public class module extends Module {
 	@Override
 	public void run() {
 		if (ok) {
-			log.log("Running WAC...");
-			log.log("Starting Server on port 2014");
+			getLogger().log("Running WAC...");
+			getLogger().log("Starting Server on port 2014");
 			startServer();
 		}
 	}
@@ -52,26 +52,26 @@ public class module extends Module {
 
 	@Override
 	public void onEnable() {
-		log.log("Enabling WAC");
+		getLogger().log("Enabling WAC");
 		try {
-			log.log("Binding ServerSocket to port 2014");
+			getLogger().log("Binding ServerSocket to port 2014");
 			clients = new ServerSocket(2014);
 			ok = true;
-			log.log("Checking Dependencies...");
+			getLogger().log("Checking Dependencies...");
 			try {
 				if (JAS.module.getV().equals(dv)) {
 					ok = true;
 				} else {
 					ok = false;
-					log.log("JAS Version " + dv
+					getLogger().log("JAS Version " + dv
 							+ " is not installed or could not be found!");
 				}
 			} catch (Exception e) {
 				ok = false;
-				log.log("Could not detect dependencies! " + e.getMessage());
+				getLogger().log("Could not detect dependencies! " + e.getMessage());
 			}
 		} catch (Exception e) {
-			log.log("Failed to bind ServerSocket to port 2014! "
+			getLogger().log("Failed to bind ServerSocket to port 2014! "
 					+ e.getMessage());
 			ok = false;
 		}
@@ -93,7 +93,7 @@ public class module extends Module {
 						handleClient(s);
 						s = null;
 					} catch (Exception e) {
-						log.log("Failed to connect to client, "
+						getLogger().log("Failed to connect to client, "
 								+ e.getMessage());
 					}
 				}
@@ -105,10 +105,10 @@ public class module extends Module {
 
 	private void handleClient(final Socket s) {
 		if (s == null) {
-			log.log("Received Null Socket connection in handler!");
+			getLogger().log("Received Null Socket connection in handler!");
 			return;
 		}
-		log.log("Received Client Connection from "
+		getLogger().log("Received Client Connection from "
 				+ s.getInetAddress().getHostAddress());
 		Thread cl = new Thread(new Runnable() {
 			public void run() {
@@ -119,7 +119,7 @@ public class module extends Module {
 					out = new PrintStream(s.getOutputStream(), true);
 				} catch (Exception e) {
 					e.printStackTrace();
-					log.log("Failed to create necessary streams from Socket!");
+					getLogger().log("Failed to create necessary streams from Socket!");
 					return;
 				}
 				JAS.module.registerSink(s.getInetAddress().getHostName());
@@ -128,7 +128,7 @@ public class module extends Module {
 				// Init DataTransfer
 				// DONE Init Datatransfer from Socket to Sink
 				if (sink == null) {
-					log.log("Odd the DataSink needed cannot be found!");
+					getLogger().log("Odd the DataSink needed cannot be found!");
 					return;
 				}
 				out.println("GO");
@@ -148,7 +148,7 @@ public class module extends Module {
 							errors++;
 						} else {
 							e.printStackTrace();
-							log.log("Over 10 errors have occurred in this sink, closing for safety!");
+							getLogger().log("Over 10 errors have occurred in this sink, closing for safety!");
 							break;
 						}
 					}
@@ -157,7 +157,7 @@ public class module extends Module {
 					bin.close();
 				} catch (Exception e) {
 					e.printStackTrace();
-					log.log("Odd I can't seem to close the Socket InputStream!");
+					getLogger().log("Odd I can't seem to close the Socket InputStream!");
 				}
 				// Cleanup, Cleanup everybody everywhere..
 				out.println("CLOSE");

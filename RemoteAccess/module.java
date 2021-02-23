@@ -35,12 +35,12 @@ public class module extends Module {
 		if (conf == null) {
 			conf = new Configuration(conff);
 		}
-		log.log("Setting up server socket on " + conf.getValue("port"));
+		getLogger().log("Setting up server socket on " + conf.getValue("port"));
 		try {
 			ServerSocket ss = new ServerSocket(Integer.parseInt((String) conf
 					.getValue("port")));
 			Socket s;
-			log.log("Server setup complete!");
+			getLogger().log("Server setup complete!");
 			while ((s = ss.accept()) != null) {
 				s.setKeepAlive(true);
 				SCTransactionHandler sc = new SCTransactionHandler(s);
@@ -48,7 +48,7 @@ public class module extends Module {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.log("Failed to start server!");
+			getLogger().log("Failed to start server!");
 		}
 	}
 
@@ -87,7 +87,7 @@ public class module extends Module {
 				out = null;
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.log("Failed to load Configuration for Remote Access!");
+				getLogger().log("Failed to load Configuration for Remote Access!");
 				ok = false;
 			}
 			// }

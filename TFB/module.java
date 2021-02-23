@@ -71,13 +71,13 @@ public class module extends Module {
 	public void onEnable() {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
-				log.log("TFB Enabled!");
-				log.log("Searching for config files...");
+				getLogger().log("TFB Enabled!");
+				getLogger().log("Searching for config files...");
 				File[] con = new File[] { new File("/config/TFB/main.config"),
 						new File("/config/TFB/locations.config") };
 				for (File f : con) {
 					if (!f.exists()) {
-						log.log("File: " + f.getAbsolutePath()
+						getLogger().log("File: " + f.getAbsolutePath()
 								+ " is not found, creating");
 						try {
 							// f.mkdirs();
@@ -88,12 +88,12 @@ public class module extends Module {
 							out.close();
 						} catch (Exception e) {
 							e.printStackTrace();
-							log.log("Unable to create file: "
+							getLogger().log("Unable to create file: "
 									+ f.getAbsolutePath());
 						}
 					}
 				}
-				log.log("Populating Variables");
+				getLogger().log("Populating Variables");
 				vars.put("tfb", "true");
 				vars.put("xvfb", "false");
 				vars.put("touch", "false");
@@ -110,27 +110,27 @@ public class module extends Module {
 								String[] v = s.split(":");
 								try {
 									vars.put(v[0], v[1]);
-									log.log("Setting Variable " + v[0] + " as "
+									getLogger().log("Setting Variable " + v[0] + " as "
 											+ v[1]);
 								} catch (Exception e) {
 									if (e instanceof ArrayIndexOutOfBoundsException) {
-										log.log("Incomplete Variable declaration in file "
+										getLogger().log("Incomplete Variable declaration in file "
 												+ f + ": " + s);
 									} else {
 										e.printStackTrace();
-										log.log("Unknown error while reading variables in "
+										getLogger().log("Unknown error while reading variables in "
 												+ f);
 									}
 								}
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
-							log.log("Cannot read file: " + f);
+							getLogger().log("Cannot read file: " + f);
 						}
 					}
 				}
-				log.log("Finished Variable Population");
-				log.log("Finding default launcher theme");
+				getLogger().log("Finished Variable Population");
+				getLogger().log("Finding default launcher theme");
 				if (vars.get("themes") != null) {
 					File f = new File(vars.get("themes"));
 					if (f.exists() && f.isDirectory()) {
@@ -138,13 +138,13 @@ public class module extends Module {
 						for (File i : to) {
 							try {
 								theme.put(i.getName(), ImageIO.read(i));
-								log.log("Theme File Loaded: " + i);
+								getLogger().log("Theme File Loaded: " + i);
 							} catch (Exception e) {
-								log.log("Unable to read Theme File: " + i);
+								getLogger().log("Unable to read Theme File: " + i);
 							}
 						}
 					} else {
-						log.log("Themes folder " + f.getAbsolutePath()
+						getLogger().log("Themes folder " + f.getAbsolutePath()
 								+ " not found!");
 					}
 				}
@@ -159,7 +159,7 @@ public class module extends Module {
 				draw.setName("TFBD");
 				draw.start();
 
-				log.log("Starting TFB Server...");
+				getLogger().log("Starting TFB Server...");
 				server = new TFB_Serv();
 				server.run();
 			}
@@ -188,7 +188,7 @@ public class module extends Module {
 
 		public Runner() {
 			try {
-				log.log(vars.get("use"));
+				getLogger().log(vars.get("use"));
 				if (f.exists()) {
 					fb = ImageIO.read(f);
 				} else {
@@ -196,7 +196,7 @@ public class module extends Module {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.log("Failed to create virtual FB!");
+				getLogger().log("Failed to create virtual FB!");
 				allgood = false;
 			}
 		}

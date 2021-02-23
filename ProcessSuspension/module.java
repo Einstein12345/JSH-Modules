@@ -43,7 +43,7 @@ public class module extends Module {
 	@Override
 	public void onEnable() {
 		// TODO Auto-generated method stub
-		log.log("Init Process Suspension Module!");
+		getLogger().log("Init Process Suspension Module!");
 	}
 
 	@Override
@@ -52,9 +52,9 @@ public class module extends Module {
 		try {
 			JProcess p = (JProcess) args[0];
 			p.suspend();
-			log.log("Suspended " + args[0]);
+			getLogger().log("Suspended " + args[0]);
 		} catch (ClassCastException e) {
-			log.log("Cannot suspend " + args[0] + " is not JProcess");
+			getLogger().log("Cannot suspend " + args[0] + " is not JProcess");
 		}
 	}
 

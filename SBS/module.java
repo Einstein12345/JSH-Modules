@@ -49,8 +49,8 @@ public class module extends Module {
 
 	@Override
 	public void onEnable() {
-		log.log("Enabling SBS FS");
-		log.log("Reading Configuration");
+		getLogger().log("Enabling SBS FS");
+		getLogger().log("Reading Configuration");
 		File conf = new File("/config/SBS/def.conf");
 		File list = new File("/config/SBS/SBS.list");
 		if (conf.exists()) {
@@ -61,33 +61,33 @@ public class module extends Module {
 					final String[] tmpa = tmp.split(":");
 					if (tmpa.length > 2) {
 						this.conf.put(tmpa[0], tmpa[1]);
-						log.log("Loaded Configuration Variable: " + tmpa[0]
+						getLogger().log("Loaded Configuration Variable: " + tmpa[0]
 								+ " = " + tmpa[1]);
 					}
 				}
 				sc.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.log("Unable to read conf file!");
+				getLogger().log("Unable to read conf file!");
 				ok = false;
 			}
 		} else {
-			log.log("/config/SBS/def.conf not found, loading defaults!");
+			getLogger().log("/config/SBS/def.conf not found, loading defaults!");
 			// Load Defaults
 		}
 		if (list.exists()) {
-			log.log("Loading SBS drives from /config/SBS/SBS.list..");
+			getLogger().log("Loading SBS drives from /config/SBS/SBS.list..");
 			try {
 				final Scanner sc = new Scanner(new FileInputStream(list));
 				while (sc.hasNext()) {
 					final String tmp = sc.nextLine();
 					dlist.add(tmp);
-					log.log("Added unchecked SBS drive, " + tmp);
+					getLogger().log("Added unchecked SBS drive, " + tmp);
 				}
 				sc.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.log("Unable to read list file! No SBS drives loaded!");
+				getLogger().log("Unable to read list file! No SBS drives loaded!");
 			}
 		}
 	}
@@ -106,21 +106,21 @@ public class module extends Module {
 	}
 
 	private void scanSBS() {
-		log.log("Scanning SBS drives...");
-		log.log("Please wait, this may take a moment...");
+		getLogger().log("Scanning SBS drives...");
+		getLogger().log("Please wait, this may take a moment...");
 		for(int i = 0; i < dlist.size(); i ++){
 			
 		}
 	}
 
 	private void listSBS() {
-		log.log("Available SBS drives: ");
+		getLogger().log("Available SBS drives: ");
 		int drives = 0;
 		for (int i = 0; i < dlist.size(); i++) {
-			log.log(i + ": " + dlist.get(i));
+			getLogger().log(i + ": " + dlist.get(i));
 			drives++;
 		}
-		log.log("Total " + drives + " drives listed");
+		getLogger().log("Total " + drives + " drives listed");
 	}
 
 }

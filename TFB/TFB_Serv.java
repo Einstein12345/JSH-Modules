@@ -29,11 +29,11 @@ public class TFB_Serv extends JProcess {
 		try {
 			ServerSocket ss = new ServerSocket(35555);
 			Socket s = null;
-			log.log("Server started on 35555");
+			getLogger().log("Server started on 35555");
 			while (isGoing) {
 				s = ss.accept();
 				final Socket tmp = s;
-				log.log("Client Connected: "+s.getInetAddress());
+				getLogger().log("Client Connected: "+s.getInetAddress());
 				Thread t = new Thread(new Runnable(){
 					public void run(){
 						Client c = new Client(tmp, log);
@@ -42,11 +42,11 @@ public class TFB_Serv extends JProcess {
 				t.setName(s.getInetAddress()+"");
 				t.start();
 			}
-			log.log("Server stopped!");
+			getLogger().log("Server stopped!");
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.log("Unable to start TFBSERVER");
+			getLogger().log("Unable to start TFBSERVER");
 			return;
 		}
 
@@ -60,7 +60,7 @@ public class TFB_Serv extends JProcess {
 		try {
 			handlers.get(c.getType()).handleClient(c);
 		} catch (Exception e) {
-			sLog.log("Unable to  handle client type: " + c.getType());
+			sgetLogger().log("Unable to  handle client type: " + c.getType());
 			c.eDown("Can't Handle Client Type");
 			c.eDown("Unknown Type");
 		}
@@ -81,11 +81,11 @@ public class TFB_Serv extends JProcess {
 	public static void registerHandler(ClientHandler h, String htype) {
 		if (handlers.containsKey(htype)) {
 			handlers.put(htype, h);
-			sLog.log("Handler For Type " + htype + " Replaced");
+			sgetLogger().log("Handler For Type " + htype + " Replaced");
 
 		} else
 			handlers.put(htype, h);
-		sLog.log("Registered Handler For Type: " + htype);
+		sgetLogger().log("Registered Handler For Type: " + htype);
 	}
 
 }

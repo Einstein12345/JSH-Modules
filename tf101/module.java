@@ -42,7 +42,7 @@ public class module extends Module{
 
 	@Override
 	public void onEnable() {
-		log.log("Enabling TF101-UTILS...");
+		getLogger().log("Enabling TF101-UTILS...");
 		
 	}
 

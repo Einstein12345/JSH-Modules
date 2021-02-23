@@ -10,7 +10,7 @@ public class CmdParser {
 		if(cmd.length >= 0){
 		if(cmd[1].equals("stop")){
 			TFB_Serv.isGoing = false;
-			log.log("Stopping server");
+			getLogger().log("Stopping server");
 		}
 		}
 	}

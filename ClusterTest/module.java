@@ -7,6 +7,7 @@ import terra.shell.launch.Launch;
 import terra.shell.modules.Module;
 import terra.shell.modules.ModuleEvent.DummyEvent;
 import terra.shell.utils.JProcess;
+import terra.shell.utils.JProcess.Depends;
 import terra.shell.utils.streams.NullInputStream;
 
 public class module extends Module {
@@ -14,7 +15,7 @@ public class module extends Module {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "ClusterTest"; 
+		return "ClusterTest";
 	}
 
 	@Override
@@ -47,23 +48,9 @@ public class module extends Module {
 
 	@Override
 	public void trigger(DummyEvent event) {
+		log.debug("Triggered");
 		if (event.getME().getArgs()[0].toString().equals("Run")) {
-			JProcess p = new JProcess() {
-				@Override
-				public String getName() {
-					return "TestClusterProcess";
-				}
-
-				@Override
-				public boolean start() {
-					log.log("Process started");
-					log.log("My UUID is: " + this.getUUID());
-					log.log("Launch contains " + Launch.cmds.size() + " commands");
-					log.log("Process completed");
-					return true;
-				}
-
-			};
+			ClusterTestProc p = new ClusterTestProc();
 			try {
 				Launch.getConnectionMan().queueProcess(p,
 						new FileOutputStream(new File(Launch.getConfD(), "ClusterTestResults.txt")),

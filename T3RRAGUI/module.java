@@ -40,7 +40,7 @@ public class module extends Module {
 
 	@Override
 	public void onEnable() {
-		log.log("TGUI Enabled");
+		getLogger().log("TGUI Enabled");
 	}
 
 	@Override

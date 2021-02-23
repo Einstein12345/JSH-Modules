@@ -47,7 +47,7 @@ public class module extends Module {
 					try {
 						t.wait();
 					} catch (Exception e) {
-						log.log("Failed to force " + t.getName() + " to pause!");
+						getLogger().log("Failed to force " + t.getName() + " to pause!");
 					}
 				}
 			}
@@ -58,7 +58,7 @@ public class module extends Module {
 
 	@Override
 	public void onEnable() {
-		log.log("ThreadTools Module Lib is now loaded");
+		getLogger().log("ThreadTools Module Lib is now loaded");
 	}
 
 	@Override

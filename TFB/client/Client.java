@@ -31,13 +31,13 @@ public class Client {
 			bin = new BufferedInputStream(s.getInputStream());
 			bout = new BufferedOutputStream(s.getOutputStream());
 			in = new Scanner(s.getInputStream());
-			log.log("Getting client type!");
+			getLogger().log("Getting client type!");
 			String type = in.nextLine();
 			this.type = type;
-			log.log("Client is " + type);
+			getLogger().log("Client is " + type);
 			TFB_Serv.handleClient(this);
 		} catch (Exception e) {
-			log.log("Failed to create connection to client!");
+			getLogger().log("Failed to create connection to client!");
 			eDown("Failed in creation of tunnel to client!");
 		}
 	}
@@ -77,7 +77,7 @@ public class Client {
 			try {
 				bin.read(byin);
 			} catch (Exception e) {
-				log.log("Failed to read bytes from Client!");
+				getLogger().log("Failed to read bytes from Client!");
 			}
 		}
 		return byin;
@@ -123,13 +123,13 @@ public class Client {
 				out.flush();
 			if (out != null)
 				out.close();
-			log.log("Connection closed to client! Emergency Close Called!");
-			log.log("Reason: " + reason);
+			getLogger().log("Connection closed to client! Emergency Close Called!");
+			getLogger().log("Reason: " + reason);
 			s = null;
 			out = null;
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.log("Failed to call Emergency Shutdown, something is VERY wrong!");
+			getLogger().log("Failed to call Emergency Shutdown, something is VERY wrong!");
 		}
 	}
 

@@ -27,14 +27,14 @@ public class Window {
 			i = ImageIO.read(u);
 			}catch(Exception e){
 				e.printStackTrace();
-				log.log("Failed to update Window!");
+				getLogger().log("Failed to update Window!");
 			}
 		} else if(f != null && f.exists()){
 			try{
 				i = ImageIO.read(f);
 			}catch (Exception e){
 				e.printStackTrace();
-				log.log("Failed to update Window!");
+				getLogger().log("Failed to update Window!");
 			}
 		}
 		return i;

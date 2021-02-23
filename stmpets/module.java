@@ -48,12 +48,12 @@ public class module extends Module {
 				new TouchScreenType());
 		EventManager.registerEvType("stmpe-ts");
 		//EventManager.registerListener(new TouchEventListener(), "stmpe-ts");
-		log.log("Registered stmpe-ts");
+		getLogger().log("Registered stmpe-ts");
 	}
 
 	@Override
 	public void trigger(ModuleEvent.DummyEvent me) {
-		log.log("Triggered");
+		getLogger().log("Triggered");
 	}
 
 }

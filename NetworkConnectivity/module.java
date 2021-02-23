@@ -17,7 +17,7 @@ public class module extends Module {
 
 	@Override
 	public void run() {
-		log.log("Running");
+		getLogger().log("Running");
 	}
 
 	@Override
@@ -37,12 +37,12 @@ public class module extends Module {
 
 	@Override
 	public void onEnable() {
-		log.log("NetWatch Module Enabled!");
+		getLogger().log("NetWatch Module Enabled!");
 	}
 
 	@Override
 	public void trigger(DummyEvent event) {
-		log.log("Triggered!");
+		getLogger().log("Triggered!");
 	}
 
 }

@@ -46,7 +46,7 @@ public class module extends Module {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.log("Houston, we have a problem!");
+			getLogger().log("Houston, we have a problem!");
 		}
 	}
 
@@ -70,7 +70,7 @@ public class module extends Module {
 
 	@Override
 	public void onEnable() {
-		log.log("Starting AudioPlayer (Basic)");
+		getLogger().log("Starting AudioPlayer (Basic)");
 		File audio = new File("/tmp/AUDIO_OUT");
 		if (audio.exists()) {
 			try {
@@ -81,7 +81,7 @@ public class module extends Module {
 				ok = false;
 			}
 		} else {
-			log.log("/tmp/AUDIO_OUT not found? Is AudioController installed?");
+			getLogger().log("/tmp/AUDIO_OUT not found? Is AudioController installed?");
 			ok = false;
 		}
 	}

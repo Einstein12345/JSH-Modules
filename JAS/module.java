@@ -38,7 +38,7 @@ public class module extends Module {
 
 	@Override
 	public void run() {
-		log.log("Populating /audio");
+		getLogger().log("Populating /audio");
 		File def = new File("/audio/DEF");
 		cd = new Datasink(def);
 		rd.put("DEF", cd);
@@ -49,7 +49,7 @@ public class module extends Module {
 			def.createNewFile();
 			nil.createNewFile();
 		} catch (Exception e) {
-			log.log("Failed to create DEF and NIL datasinks! " + e.getMessage());
+			getLogger().log("Failed to create DEF and NIL datasinks! " + e.getMessage());
 		}
 		try {
 			final BufferedOutputStream bout = new BufferedOutputStream(
@@ -58,9 +58,9 @@ public class module extends Module {
 			bout.flush();
 			bout.close();
 		} catch (Exception e) {
-			log.log("Failed to populate NIL datasink!");
+			getLogger().log("Failed to populate NIL datasink!");
 		}
-		log.log("Finished Populating /audio");
+		getLogger().log("Finished Populating /audio");
 		jasd = new JASD(this);
 		jasd.start();
 	}
@@ -87,16 +87,16 @@ public class module extends Module {
 	@Override
 	public void onEnable() {
 		slog = log;
-		log.log("Loading JAS");
+		getLogger().log("Loading JAS");
 		File ad = new File("/audio/");
 		if (!ad.exists()) {
 			try {
 				ad.mkdir();
-				log.log("Created /audio/");
-				log.log("/audio/ will contain all audio datasinks");
+				getLogger().log("Created /audio/");
+				getLogger().log("/audio/ will contain all audio datasinks");
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.log("Failed to create /audio, FAILURE IN LAUNCH!");
+				getLogger().log("Failed to create /audio, FAILURE IN LAUNCH!");
 				ok = false;
 				return;
 			}
@@ -105,15 +105,15 @@ public class module extends Module {
 		if (!cd.exists()) {
 			try {
 				cd.mkdir();
-				log.log("Created config dir");
+				getLogger().log("Created config dir");
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.log("Couldn't create config dir!");
+				getLogger().log("Couldn't create config dir!");
 			}
 		}
 		File conf = new File("/config/JAS/conf.conf");
 		if (!conf.exists()) {
-			log.log("No config found, using defaults");
+			getLogger().log("No config found, using defaults");
 			cf = false;
 		}
 		if (cf) {
@@ -131,10 +131,10 @@ public class module extends Module {
 			} catch (Exception e) {
 				e.printStackTrace();
 				cf = false;
-				log.log("Unable to read config, using defaults");
+				getLogger().log("Unable to read config, using defaults");
 			}
 		}
-		log.log("JAS Loaded!");
+		getLogger().log("JAS Loaded!");
 	}
 
 	public Datasink getCurrent() {
@@ -161,9 +161,9 @@ public class module extends Module {
 			try {
 				tmp.createNewFile();
 				rd.put((String) name, new Datasink(tmp));
-				slog.log("Registered " + name);
+				sgetLogger().log("Registered " + name);
 			} catch (Exception e) {
-				slog.log("Failed to create audio datasink " + name);
+				sgetLogger().log("Failed to create audio datasink " + name);
 			}
 		}
 	}
@@ -178,12 +178,12 @@ public class module extends Module {
 					if (tmp.exists()) {
 						tmp.delete();
 					}
-					slog.log("Removed " + name);
+					sgetLogger().log("Removed " + name);
 				} else {
-					slog.log("Unable to remove current datasink!");
+					sgetLogger().log("Unable to remove current datasink!");
 				}
 			} catch (Exception e) {
-				slog.log("Failed to remove audio datasink " + name);
+				sgetLogger().log("Failed to remove audio datasink " + name);
 			}
 		}
 	}
@@ -196,12 +196,12 @@ public class module extends Module {
 				if (rd.containsKey(args[1])) {
 					cd = rd.get(args[1]);
 				} else {
-					log.log(args[1] + " is not a registered datasink");
+					getLogger().log(args[1] + " is not a registered datasink");
 				}
 			}
 			if (args[0].equals("PA")) {
 				jasd.pause();
-				log.log("Toggling pause");
+				getLogger().log("Toggling pause");
 			}
 			if (args[0].equals("RD") && args.length > 1) {
 				registerSink(args[1] + "");

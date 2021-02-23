@@ -24,7 +24,7 @@ public class GUIClientHandler extends ClientHandler {
 							module.addWindow(w);
 						} catch (MalformedURLException me) {
 							c.eDown(me.getLocalizedMessage());
-							log.log("Failed to find image specified by client "
+							getLogger().log("Failed to find image specified by client "
 									+ me.getLocalizedMessage());
 						}
 					}

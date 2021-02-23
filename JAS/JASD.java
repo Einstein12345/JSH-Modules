@@ -15,11 +15,11 @@ public class JASD extends JProcess {
 	public JASD(module m) {
 		this.m = m;
 		if (!f.exists()) {
-			log.log("Well looks like /dev/dsp isnt existent! FIX IT!");
+			getLogger().log("Well looks like /dev/dsp isnt existent! FIX IT!");
 			ok = false;
 		}
 		if (!f.canWrite()) {
-			log.log("Can't write to /dev/dsp!");
+			getLogger().log("Can't write to /dev/dsp!");
 			ok = false;
 		}
 	}
@@ -32,10 +32,10 @@ public class JASD extends JProcess {
 	@Override
 	public boolean start() {
 		if (!ok) {
-			log.log("Guess What! I don't care if you");
-			log.log("want me to start or not! I dont");
-			log.log("think its safe to come out! Maybe");
-			log.log("if you reload me I might think differently");
+			getLogger().log("Guess What! I don't care if you");
+			getLogger().log("want me to start or not! I dont");
+			getLogger().log("think its safe to come out! Maybe");
+			getLogger().log("if you reload me I might think differently");
 			return false;
 		}
 		BufferedOutputStream bout = null;
@@ -43,7 +43,7 @@ public class JASD extends JProcess {
 			bout = new BufferedOutputStream(new FileOutputStream(f, true));
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.log("Well that sucks...");
+			getLogger().log("Well that sucks...");
 			return false;
 		}
 		int errors = 0;
@@ -51,10 +51,10 @@ public class JASD extends JProcess {
 		while (!m.stop()) {
 			try {
 				Thread.sleep(10);
-				// log.log("Sleep");
+				// getLogger().log("Sleep");
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.log("FAILING");
+				getLogger().log("FAILING");
 				error = true;
 				break;
 			}
@@ -72,7 +72,7 @@ public class JASD extends JProcess {
 				} catch (Exception e) {
 					e.printStackTrace();
 					if (error && errors == 4) {
-						log.log("Four errors detected! Halting JASD!");
+						getLogger().log("Four errors detected! Halting JASD!");
 						break;
 					} else {
 						error = true;
@@ -85,14 +85,14 @@ public class JASD extends JProcess {
 			bout.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.log("Can't close the output to /dev/dsp! Resource Leak detected!");
+			getLogger().log("Can't close the output to /dev/dsp! Resource Leak detected!");
 		}
 		return true;
 	}
 
 	public void pause() {
 		pause = !pause;
-		log.log("Pause: " + pause);
+		getLogger().log("Pause: " + pause);
 	}
 
 }

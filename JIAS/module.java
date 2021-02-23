@@ -30,7 +30,7 @@ public class module extends Module {
 	}
 
 	public void log(String msg) {
-		log.log("--" + msg);
+		getLogger().log("--" + msg);
 	}
 
 	@Override
@@ -69,21 +69,21 @@ public class module extends Module {
 		File dsp = new File((String) conf.getValue("dspFile"));
 		if (!dsp.exists()) {
 			isgood = false;
-			log.log("Unable to start Audio System, " + dsp.getPath() + " not found");
+			getLogger().log("Unable to start Audio System, " + dsp.getPath() + " not found");
 			return;
 		}
 		if (!dsp.canWrite()) {
-			log.log("Unable to write to " + dsp.getPath() + ", Audio Output will not be available!");
+			getLogger().log("Unable to write to " + dsp.getPath() + ", Audio Output will not be available!");
 			canwrite = false;
 		}
 		if (!dsp.canRead()) {
-			log.log("Unable to read from " + dsp.getPath() + ", Audio Input will not be available!");
+			getLogger().log("Unable to read from " + dsp.getPath() + ", Audio Input will not be available!");
 			canread = false;
 		}
 
 		if (!canread && !canwrite) {
 			isgood = false;
-			log.log("Cannot read or write to /dev/dsp");
+			getLogger().log("Cannot read or write to /dev/dsp");
 			return;
 		}
 		// Read only
@@ -112,7 +112,7 @@ public class module extends Module {
 		if (o instanceof String) {
 			String arg = (String) o;
 			if (arg.equals("testTone")) {
-				log.log("SoundTest");
+				getLogger().log("SoundTest");
 				int[] tone = genTestTone(100);
 				for (int i = 0; i < tone.length; i++) {
 					for (int j = 0; j < writeOnly.size(); j++) {

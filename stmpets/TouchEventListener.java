@@ -11,7 +11,7 @@ public class TouchEventListener extends EventListener {
 	@Override
 	public void trigger(Event e) {
 		TouchEvent te = (TouchEvent) e;
-		log.log(te.getX() + " : " + te.getY());
+		getLogger().log(te.getX() + " : " + te.getY());
 	}
 
 }

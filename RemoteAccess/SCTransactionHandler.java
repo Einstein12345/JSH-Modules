@@ -27,7 +27,7 @@ public class SCTransactionHandler extends JProcess {
 			t.run();
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.log("Connection closed!");
+			getLogger().log("Connection closed!");
 			return true;
 		}
 		return false;
