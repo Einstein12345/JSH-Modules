@@ -51,6 +51,7 @@ public class module extends Module {
 		log.debug("Triggered");
 		if (event.getME().getArgs()[0].toString().equals("Run")) {
 			ClusterTestProc p = new ClusterTestProc();
+			p.run();
 			try {
 				Launch.getConnectionMan().queueProcess(p,
 						new FileOutputStream(new File(Launch.getConfD(), "ClusterTestResults.txt")),

@@ -1,20 +1,24 @@
 package ClusterTest;
 
-import java.util.UUID;
-
 import terra.shell.utils.JProcess;
 import terra.shell.utils.ReturnValue;
 
-public class ClusterTestProcReturnValue extends ReturnValue {
-	private Object[] values;
-	private UUID pid;
-	
+public final class ClusterTestProcReturnValue extends ReturnValue {
+	protected Object[] values;
 	public ClusterTestProcReturnValue(JProcess p) {
 		super(p);
 	}
 
+	/**
+	 * @deprecated Use {@link #setValues(Object...)} instead
+	 */
 	@Override
 	public boolean processReturn(Object... values) {
+		return setValues(values);
+	}
+
+	@Override
+	public boolean setValues(Object... values) {
 		this.values = values;
 		return true;
 	}
@@ -23,4 +27,5 @@ public class ClusterTestProcReturnValue extends ReturnValue {
 	public Object[] getReturnValue() {
 		return values;
 	}
+	
 }
