@@ -1,5 +1,7 @@
 package Darla;
 
+import java.io.File;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
@@ -11,6 +13,7 @@ import org.vosk.Model;
 import org.vosk.Recognizer;
 
 import terra.shell.config.Configuration;
+import terra.shell.launch.Launch;
 import terra.shell.utils.JProcess;
 
 public class Darla extends JProcess {
@@ -19,10 +22,27 @@ public class Darla extends JProcess {
 	private Configuration conf;
 
 	public Darla(Configuration conf) throws LineUnavailableException {
-		LibVosk.setLogLevel(LogLevel.DEBUG);
-		AudioFormat f = new AudioFormat(48000.0f, 16, 1, true, true);
-		audioIn = AudioSystem.getTargetDataLine(f);
-		this.conf = conf;
+		final File libLocNix = new File(Launch.getConfD() + "/DarlaLib", "libvosk.so");
+		final File libLocMac = new File(Launch.getConfD() + "/DarlaLib", "libvosk.dylib");
+		if (libLocNix.exists()) {
+			getLogger().debug("Loading libvosk.so");
+			System.load(libLocNix.getAbsolutePath());
+		} else if (libLocMac.exists()) {
+			getLogger().debug("Loading libvosk.dylib");
+			System.load(libLocMac.getAbsolutePath());
+		} else {
+			getLogger().err("FAILED TO LOAD libvosk LIBRARY");
+			return;
+		}
+		try {
+			LibVosk.setLogLevel(LogLevel.DEBUG);
+			AudioFormat f = new AudioFormat(48000.0f, 16, 1, true, true);
+			audioIn = AudioSystem.getTargetDataLine(f);
+			this.conf = conf;
+		} catch (Exception e) {
+			e.printStackTrace();
+			getLogger().debug("Failed to run constructor");
+		}
 	}
 
 	@Override
