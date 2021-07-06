@@ -397,7 +397,7 @@ public class module extends Module {
 				if (!e.getName().endsWith(".class")) {
 					if (os.contains("mac") && e.getName().endsWith(".dylib")) {
 						try {
-							FileSystem fs = FileSystems.newFileSystem(voskJar.toPath(), null);
+							FileSystem fs = FileSystems.newFileSystem(voskJar.toPath(), (ClassLoader) null);
 							Path macLib = fs.getPath(e.getName());
 							File libLoc = new File(Launch.getConfD() + "/DarlaLib", "libvosk.dylib");
 							Files.copy(macLib, libLoc.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -410,7 +410,7 @@ public class module extends Module {
 					if ((os.contains("nix") || os.contains("nux") || os.contains("aix"))
 							&& e.getName().endsWith(".so")) {
 						try {
-							FileSystem fs = FileSystems.newFileSystem(voskJar.toPath(), null);
+							FileSystem fs = FileSystems.newFileSystem(voskJar.toPath(), (ClassLoader) null);
 							Path nixLib = fs.getPath(e.getName());
 							File libLoc = new File(Launch.getConfD() + "/DarlaLib", "libvosk.so");
 							Files.copy(nixLib, libLoc.toPath(), StandardCopyOption.REPLACE_EXISTING);
