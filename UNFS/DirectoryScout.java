@@ -1,8 +1,9 @@
 package UNFS;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.util.zip.GZIPInputStream;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import terra.shell.config.Configuration;
 import terra.shell.launch.Launch;
@@ -56,9 +57,11 @@ public class DirectoryScout extends JProcess {
 			return false;
 		}
 		try {
-			GZIPInputStream ftStream = new GZIPInputStream(new FileInputStream(ft));
-			// TODO Parse FileTable, begin reading FCBs
+			ZipFile zipFs = new ZipFile(ft);
+			Enumeration<? extends ZipEntry> entries = zipFs.entries();
 			
+			// TODO Parse FileTable, begin reading FCBs
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

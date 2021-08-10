@@ -1,7 +1,6 @@
 package Darla;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -16,8 +15,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.InflaterInputStream;
-import java.util.zip.InflaterOutputStream;
+import java.util.zip.ZipFile;
 
 import terra.shell.config.Configuration;
 import terra.shell.launch.Launch;
@@ -313,16 +311,8 @@ public class module extends Module {
 				if (!voskModelDir.exists()) {
 					voskModelDir.mkdir();
 					log.log("Extracting Vosk model...");
-					FileInputStream modelZipIn = new FileInputStream(voskModel);
-					FileOutputStream modelDirOut = new FileOutputStream(voskModelDir);
-					InflaterInputStream din = new InflaterInputStream(modelZipIn);
-					InflaterOutputStream dout = new InflaterOutputStream(modelDirOut);
-					ReadableByteChannel modelChannel = Channels.newChannel(din);
-					FileChannel dirOut = modelDirOut.getChannel();
-					dirOut.transferFrom(modelChannel, 0, Long.MAX_VALUE);
-					modelZipIn.close();
-					modelDirOut.flush();
-					modelDirOut.close();
+					ZipFile zf = new ZipFile(voskModel);
+					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
