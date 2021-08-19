@@ -53,7 +53,7 @@ public class module extends Module {
 			ClusterTestProc p = new ClusterTestProc();
 			p.run();
 			try {
-				Launch.getConnectionMan().queueProcess(p,
+				Launch.getConnectionMan().sendToAll(p,
 						new FileOutputStream(new File(Launch.getConfD(), "ClusterTestResults.txt")),
 						new NullInputStream());
 			} catch (Exception e) {
