@@ -19,6 +19,7 @@ import terra.shell.utils.system.ByteClassLoader.Replaceable;
 public class DirectoryScout extends JProcess {
 	protected ReturnValue rv;
 	private static final long serialVersionUID = 6788713984586951441L;
+	private String[] zipFsPaths;
 
 	@Override
 	public String getName() {
@@ -59,9 +60,12 @@ public class DirectoryScout extends JProcess {
 		try {
 			ZipFile zipFs = new ZipFile(ft);
 			Enumeration<? extends ZipEntry> entries = zipFs.entries();
-			
-			// TODO Parse FileTable, begin reading FCBs
-
+			zipFsPaths = new String[zipFs.size()];
+			int i = 0;
+			while (entries.hasMoreElements()) {
+				zipFsPaths[i] = entries.nextElement().getName();
+			}
+			rv.setValues(zipFsPaths);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -71,7 +75,15 @@ public class DirectoryScout extends JProcess {
 
 	@Override
 	public void createReturn() {
-		this.rv = new DirectoryScoutReturnValue(this);
+		this.rv = new DirectoryScoutReturnValue(this, zipFsPaths);
+	}
+
+	@Override
+	public void processReturn(ReturnValue rv) {
+		if (rv instanceof DirectoryScoutReturnValue) {
+			DirectoryScoutReturnValue drv = (DirectoryScoutReturnValue) rv;
+			
+		}
 	}
 
 }

@@ -1,13 +1,25 @@
 package UNFS;
 
+import java.net.Inet4Address;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+
 import terra.shell.modules.Module;
 import terra.shell.modules.ModuleEvent.DummyEvent;
 
 public class module extends Module {
 
+	private DirectoryScout ds;
+	private static HashMap<Inet4Address, HashSet<String>> remoteIpZFSPaths = new HashMap<Inet4Address, HashSet<String>>();
+
 	@Override
 	public String getName() {
 		return "UNFS";
+	}
+
+	public static void updateRemotePathing(Inet4Address ip, String[] paths) {
+		remoteIpZFSPaths.put(ip, (HashSet<String>) Set.of(paths));
 	}
 
 	@Override
@@ -35,7 +47,7 @@ public class module extends Module {
 	public void onEnable() {
 		log.log("Enabled UNFS (Unified Networked File System)");
 		log.log("Scanning local directory structure in subprocess");
-		DirectoryScout ds = new DirectoryScout();
+		ds = new DirectoryScout();
 		ds.start();
 	}
 

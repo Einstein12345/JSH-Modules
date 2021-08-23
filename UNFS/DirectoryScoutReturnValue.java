@@ -1,14 +1,29 @@
 package UNFS;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+
 import terra.shell.utils.JProcess;
 import terra.shell.utils.ReturnValue;
 import terra.shell.utils.system.ByteClassLoader.Replaceable;
 
 @Replaceable(replaceable = false)
 public class DirectoryScoutReturnValue extends ReturnValue {
+	private final String[] paths;
+	private Inet4Address remIp;
 
-	public DirectoryScoutReturnValue(JProcess p) {
+	public DirectoryScoutReturnValue(JProcess p, String[] paths) {
 		super(p);
+		this.paths = paths;
+		try {
+			remIp = (Inet4Address) Inet4Address.getLocalHost();
+		} catch (Exception e) {
+			remIp = (Inet4Address) InetAddress.getLoopbackAddress();
+		}
+	}
+
+	public Inet4Address getRemoteIp() {
+		return remIp;
 	}
 
 	@Override
@@ -20,7 +35,7 @@ public class DirectoryScoutReturnValue extends ReturnValue {
 	@Override
 	public Object[] getReturnValue() {
 		// TODO Auto-generated method stub
-		return null;
+		return paths;
 	}
 
 	/**
