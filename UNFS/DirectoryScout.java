@@ -1,9 +1,11 @@
 package UNFS;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import terra.shell.config.Configuration;
 import terra.shell.launch.Launch;
@@ -40,7 +42,11 @@ public class DirectoryScout extends JProcess {
 			if (!f.exists()) {
 				try {
 					getLogger().log("Creating UNFS FileTable at " + f.getAbsolutePath());
-					f.createNewFile();
+					ZipOutputStream zOut = new ZipOutputStream(new FileOutputStream(f));
+					zOut.putNextEntry(new ZipEntry("/"));
+					zOut.closeEntry();
+					zOut.flush();
+					zOut.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 					return false;
@@ -64,6 +70,9 @@ public class DirectoryScout extends JProcess {
 			int i = 0;
 			while (entries.hasMoreElements()) {
 				zipFsPaths[i] = entries.nextElement().getName();
+			}
+			if(rv == null) {
+				createReturn();
 			}
 			rv.setValues(zipFsPaths);
 		} catch (Exception e) {

@@ -53,7 +53,7 @@ public class Darla extends JProcess {
 
 	@Override
 	public String getName() {
-		return "Darla";
+		return "Darla"; 
 	}
 
 	@Override
