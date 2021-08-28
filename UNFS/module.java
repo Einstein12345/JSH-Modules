@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import UNFS.events.ListDirectoryEvent;
 import terra.shell.modules.Module;
 import terra.shell.modules.ModuleEvent.DummyEvent;
 
@@ -53,6 +54,13 @@ public class module extends Module {
 
 	@Override
 	public void trigger(DummyEvent event) {
+		if (event.getME() instanceof ListDirectoryEvent) {
+			ListDirectoryEvent lde = (ListDirectoryEvent) event.getME();
+			Object[] args = lde.getArgs();
+			if(args.length == 1) {
+				String path = args[0].toString();
+			}
+		}
 	}
 
 }

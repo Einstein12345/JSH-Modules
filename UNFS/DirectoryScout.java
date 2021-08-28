@@ -91,6 +91,7 @@ public class DirectoryScout extends JProcess {
 	public void processReturn(ReturnValue rv) {
 		if (rv instanceof DirectoryScoutReturnValue) {
 			DirectoryScoutReturnValue drv = (DirectoryScoutReturnValue) rv;
+			String[] remPaths = (String[]) drv.getReturnValue();
 			
 		}
 	}

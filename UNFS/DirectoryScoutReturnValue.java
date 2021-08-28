@@ -9,6 +9,10 @@ import terra.shell.utils.system.ByteClassLoader.Replaceable;
 
 @Replaceable(replaceable = false)
 public class DirectoryScoutReturnValue extends ReturnValue {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6149621023513794652L;
 	private final String[] paths;
 	private Inet4Address remIp;
 
