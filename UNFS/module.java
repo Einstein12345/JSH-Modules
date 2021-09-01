@@ -1,14 +1,20 @@
 package UNFS;
 
+import java.net.Inet4Address;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import UNFS.events.ListDirectoryEvent;
+import UNFS.events.MajorFileUpdateEvent;
 import terra.shell.modules.Module;
 import terra.shell.modules.ModuleEvent.DummyEvent;
 
 public class module extends Module {
 
 	private DirectoryScout ds;
+	// TODO Adjust remoteIpZFSPaths to reflect possible duplicates with different
+	// data
 	private static HashMap<String, UNFSFileDescriptor> remoteIpZFSPaths = new HashMap<String, UNFSFileDescriptor>();
 
 	@Override
@@ -58,7 +64,11 @@ public class module extends Module {
 			Object[] args = lde.getArgs();
 			if (args.length == 1) {
 				String path = args[0].toString();
+
 			}
+		} else if (event.getME() instanceof MajorFileUpdateEvent) {
+			MajorFileUpdateEvent mfe = (MajorFileUpdateEvent) event.getME();
+			
 		}
 	}
 

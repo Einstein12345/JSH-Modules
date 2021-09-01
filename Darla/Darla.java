@@ -71,7 +71,7 @@ public class Darla extends JProcess {
 		try {
 			audioIn.open();
 			audioIn.start();
-			getLogger().debug(audioIn.getLineInfo().toString());
+			//getLogger().debug(audioIn.getLineInfo().toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			getLogger().debug("Failed to open microphone");

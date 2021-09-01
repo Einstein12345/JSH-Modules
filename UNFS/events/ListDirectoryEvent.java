@@ -1,25 +1,24 @@
 package UNFS.events;
 
 import UNFS.UNFSFileDescriptor;
-import terra.shell.modules.ModuleEvent;
 
-public class ListDirectoryEvent extends ModuleEvent {
+public class ListDirectoryEvent extends FileEvent {
 	UNFSFileDescriptor dir[];
 	boolean complete;
 
 	public ListDirectoryEvent(Object[] args) {
-		super("UNFS", args);
+		super(args);
 	}
 
-	public boolean completed() {
+	public final boolean completed() {
 		return complete;
 	}
 
-	public UNFSFileDescriptor[] getDirectoryListing() {
+	public final UNFSFileDescriptor[] getDiresctoryListing() {
 		return dir;
 	}
 
-	public void setDirectoryListing(UNFSFileDescriptor[] dir) {
+	public final void setDirectoryListing(UNFSFileDescriptor[] dir) {
 		this.dir = dir;
 		complete = true;
 	}

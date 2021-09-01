@@ -7,6 +7,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import UNFS.events.MajorFileUpdateEvent;
 import terra.shell.config.Configuration;
 import terra.shell.launch.Launch;
 import terra.shell.utils.JProcess;
@@ -14,6 +15,7 @@ import terra.shell.utils.JProcess.Depends;
 import terra.shell.utils.JProcess.ReturnType;
 import terra.shell.utils.ReturnValue;
 import terra.shell.utils.system.ByteClassLoader.Replaceable;
+import terra.shell.utils.system.EventManager;
 
 @Depends(dependencies = DirectoryScoutReturnValue.class)
 @ReturnType(getReturnType = terra.shell.utils.system.ReturnType.ASYNCHRONOUS)
@@ -93,8 +95,10 @@ public class DirectoryScout extends JProcess {
 	public void processReturn(ReturnValue rv) {
 		if (rv instanceof DirectoryScoutReturnValue) {
 			DirectoryScoutReturnValue drv = (DirectoryScoutReturnValue) rv;
-			String[] remPaths = (String[]) drv.getReturnValue();
-
+			UNFSFileDescriptor[] remPaths = (UNFSFileDescriptor[]) drv.getReturnValue();
+			for (UNFSFileDescriptor desc : remPaths) {
+				new MajorFileUpdateEvent(null, desc);
+			}
 		}
 	}
 

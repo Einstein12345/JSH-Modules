@@ -19,8 +19,8 @@ public class ParseInput extends JProcess {
 
 	@Override
 	public boolean start() {
-		getLogger().print(input);
-		return false;
+		// getLogger().print(input);
+		return true;
 	}
 
 }
