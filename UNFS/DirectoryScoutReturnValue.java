@@ -13,10 +13,10 @@ public class DirectoryScoutReturnValue extends ReturnValue {
 	 * 
 	 */
 	private static final long serialVersionUID = 6149621023513794652L;
-	private final String[] paths;
+	private final UNFSFileDescriptor[] paths;
 	private Inet4Address remIp;
 
-	public DirectoryScoutReturnValue(JProcess p, String[] paths) {
+	public DirectoryScoutReturnValue(JProcess p, UNFSFileDescriptor[] paths) {
 		super(p);
 		this.paths = paths;
 		try {

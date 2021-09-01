@@ -21,7 +21,7 @@ import terra.shell.utils.system.ByteClassLoader.Replaceable;
 public class DirectoryScout extends JProcess {
 	protected ReturnValue rv;
 	private static final long serialVersionUID = 6788713984586951441L;
-	private String[] zipFsPaths;
+	private UNFSFileDescriptor[] zipFsPaths;
 
 	@Override
 	public String getName() {
@@ -66,12 +66,14 @@ public class DirectoryScout extends JProcess {
 		try {
 			ZipFile zipFs = new ZipFile(ft);
 			Enumeration<? extends ZipEntry> entries = zipFs.entries();
-			zipFsPaths = new String[zipFs.size()];
+			zipFsPaths = new UNFSFileDescriptor[zipFs.size()];
 			int i = 0;
 			while (entries.hasMoreElements()) {
-				zipFsPaths[i] = entries.nextElement().getName();
+				ZipEntry e = entries.nextElement();
+				zipFsPaths[i] = new UNFSFileDescriptor(e.getName(), e.getSize(), e.getCrc());
+				i++;
 			}
-			if(rv == null) {
+			if (rv == null) {
 				createReturn();
 			}
 			rv.setValues(zipFsPaths);
@@ -92,7 +94,7 @@ public class DirectoryScout extends JProcess {
 		if (rv instanceof DirectoryScoutReturnValue) {
 			DirectoryScoutReturnValue drv = (DirectoryScoutReturnValue) rv;
 			String[] remPaths = (String[]) drv.getReturnValue();
-			
+
 		}
 	}
 
