@@ -1,9 +1,6 @@
 package UNFS;
 
-import java.net.Inet4Address;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import UNFS.events.ListDirectoryEvent;
 import terra.shell.modules.Module;
@@ -12,15 +9,17 @@ import terra.shell.modules.ModuleEvent.DummyEvent;
 public class module extends Module {
 
 	private DirectoryScout ds;
-	private static HashMap<Inet4Address, HashSet<String>> remoteIpZFSPaths = new HashMap<Inet4Address, HashSet<String>>();
+	private static HashMap<String, UNFSFileDescriptor> remoteIpZFSPaths = new HashMap<String, UNFSFileDescriptor>();
 
 	@Override
 	public String getName() {
 		return "UNFS";
 	}
 
-	public static void updateRemotePathing(Inet4Address ip, String[] paths) {
-		remoteIpZFSPaths.put(ip, (HashSet<String>) Set.of(paths));
+	public static void updateRemotePathing(UNFSFileDescriptor[] paths) {
+		for (UNFSFileDescriptor desc : paths) {
+			remoteIpZFSPaths.put(desc.getFilePath(), desc);
+		}
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class module extends Module {
 		if (event.getME() instanceof ListDirectoryEvent) {
 			ListDirectoryEvent lde = (ListDirectoryEvent) event.getME();
 			Object[] args = lde.getArgs();
-			if(args.length == 1) {
+			if (args.length == 1) {
 				String path = args[0].toString();
 			}
 		}
