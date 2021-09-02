@@ -14,7 +14,7 @@ public class ClusterTestProc extends JProcess {
 
 	private static final long serialVersionUID = -2296188400014993785L;
 
-	protected ReturnValue rv;
+	protected ReturnValue<Object[]> rv;
 
 	public ClusterTestProc() {
 		super();
@@ -38,17 +38,18 @@ public class ClusterTestProc extends JProcess {
 
 	@Override
 	public void processReturn(ReturnValue rv) {
-		Object[] ret = rv.getReturnValue();
+		Object[] ret = ((ClusterTestProcReturnValue) rv).getReturnValue();
 		LogManager.out.println("Remote UUID: " + ret[0]);
 		LogManager.out.println("Remote SUID: " + ret[1]);
-		//TODO Need to figure out how to encapsulate information from Remote in ReturnValue only if on a remote system??
+		// TODO Need to figure out how to encapsulate information from Remote in
+		// ReturnValue only if on a remote system??
 	}
 
 	@Override
 	public ReturnValue getReturn() {
 		return rv;
 	}
-	
+
 	@Override
 	public void createReturn() {
 		rv = new ClusterTestProcReturnValue(this);
