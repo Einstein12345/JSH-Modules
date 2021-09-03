@@ -4,7 +4,9 @@ import java.io.File;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
 import javax.sound.sampled.Mixer.Info;
 import javax.sound.sampled.TargetDataLine;
 
@@ -37,13 +39,7 @@ public class Darla extends JProcess {
 		}
 		try {
 			LibVosk.setLogLevel(LogLevel.DEBUG);
-			AudioFormat f = new AudioFormat(48000.0f, 16, 1, true, true);
-			Info[] info = AudioSystem.getMixerInfo();
-			for (Info in : info) {
-				getLogger().debug(in.getDescription());
-			}
-			audioIn = AudioSystem.getTargetDataLine(f);
-
+			audioIn = getAudioInputLine();
 			this.conf = conf;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -53,7 +49,7 @@ public class Darla extends JProcess {
 
 	@Override
 	public String getName() {
-		return "Darla"; 
+		return "Darla";
 	}
 
 	@Override
@@ -71,7 +67,7 @@ public class Darla extends JProcess {
 		try {
 			audioIn.open();
 			audioIn.start();
-			//getLogger().debug(audioIn.getLineInfo().toString());
+			// getLogger().debug(audioIn.getLineInfo().toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			getLogger().debug("Failed to open microphone");
@@ -88,6 +84,32 @@ public class Darla extends JProcess {
 		}
 		r.close();
 		return false;
+	}
+
+	private TargetDataLine getAudioInputLine() {
+		AudioFormat f = new AudioFormat(48000.0f, 16, 1, true, true);
+		getLogger().debug("Listing MixerInfos");
+		Mixer.Info[] info = AudioSystem.getMixerInfo();
+		TargetDataLine ret = null;
+		for (Mixer.Info in : info) {
+			getLogger().debug(in.getDescription());
+			Mixer m = AudioSystem.getMixer(in);
+			Line.Info[] lines = m.getTargetLineInfo();
+			for (Line.Info line : lines) {
+				getLogger().debug("Found line: " + line);
+				try {
+					m.open();
+					getLogger().debug("Line Available");
+					ret = AudioSystem.getTargetDataLine(f, in);
+					break;
+				} catch (Exception e) {
+					getLogger().debug("Line Not Available");
+				}
+			}
+		}
+		getLogger().debug("Using Line: " + audioIn.getLineInfo());
+
+		return ret;
 	}
 
 }
