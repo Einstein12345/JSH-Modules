@@ -4,10 +4,8 @@ import java.io.File;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Line;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Mixer;
-import javax.sound.sampled.Mixer.Info;
 import javax.sound.sampled.TargetDataLine;
 
 import org.vosk.LibVosk;
@@ -75,6 +73,7 @@ public class Darla extends JProcess {
 			return false;
 		}
 		while ((nBytes = audioIn.read(b, 0, 4096)) >= 0) {
+			getLogger().debug(audioIn.getLevel() + "");
 			if (r.acceptWaveForm(b, nBytes)) {
 				result = r.getResult();
 			}
@@ -86,30 +85,10 @@ public class Darla extends JProcess {
 		return false;
 	}
 
-	private TargetDataLine getAudioInputLine() {
+	private TargetDataLine getAudioInputLine() throws LineUnavailableException {
 		AudioFormat f = new AudioFormat(48000.0f, 16, 1, true, true);
-		getLogger().debug("Listing MixerInfos");
-		Mixer.Info[] info = AudioSystem.getMixerInfo();
-		TargetDataLine ret = null;
-		for (Mixer.Info in : info) {
-			getLogger().debug(in.getDescription());
-			Mixer m = AudioSystem.getMixer(in);
-			Line.Info[] lines = m.getTargetLineInfo();
-			for (Line.Info line : lines) {
-				getLogger().debug("Found line: " + line);
-				try {
-					m.open();
-					getLogger().debug("Line Available");
-					ret = AudioSystem.getTargetDataLine(f, in);
-					break;
-				} catch (Exception e) {
-					getLogger().debug("Line Not Available");
-				}
-			}
-		}
-		getLogger().debug("Using Line: " + audioIn.getLineInfo());
-
-		return ret;
+		DataLine.Info dataLine = new DataLine.Info(TargetDataLine.class, f);
+		return (TargetDataLine) AudioSystem.getLine(dataLine);
 	}
 
 }
