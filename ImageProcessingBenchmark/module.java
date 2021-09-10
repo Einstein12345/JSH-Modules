@@ -19,6 +19,7 @@ public class module extends terra.shell.modules.Module {
 	private boolean started = false;
 	private int numNodes = -1;
 	private int imgCheckComplete = 0;
+	private BufferedImage[][] resizedImgSplit;
 
 	@Override
 	public String getName() {
@@ -102,9 +103,22 @@ public class module extends terra.shell.modules.Module {
 			e.printStackTrace();
 			return;
 		}
+		// FIXME Check this math, its likely wrong
 		BufferedImage[] imgSplit = new BufferedImage[availableCores.size()];
-		int splitWidth = img.getWidth() / imgSplit.length;
-		int splitHeight = img.getHeight() / imgSplit.length;
+		// resizedImgSplit is two dimensional array representing image locations
+		// Because we are splitting the image into 3 rows, our columns are then
+		// (availableCores/3). So maxX = (availableCores/3), maxY = 3
+
+		// FIXME THis fails to deal with cases in which the availableCores amount is not
+		// divisible by 3 evenly, possibly just round it down and make it even to avoid
+		// this entirely
+		resizedImgSplit = new BufferedImage[imgSplit.length / 3][3];
+		int splitWidth = img.getWidth() / (imgSplit.length / 3);
+		int splitHeight = img.getHeight() / 3;
+		// FIXME (DONE) Image split should be done so that availableCores represents
+		// TOTAL
+		// number of images created, rather than how it is now which creates
+		// availableCores^2 images
 		int x = 0, y = 0;
 		for (int i = 0; i < imgSplit.length; i++) {
 			imgSplit[i] = img.getSubimage(x, y, splitWidth, splitHeight);
@@ -118,8 +132,21 @@ public class module extends terra.shell.modules.Module {
 				}
 			}
 		}
+		int index = 0;
+		int indexY = 0;
+		for (BufferedImage i : imgSplit) {
+			SplitImageProcessor p = new SplitImageProcessor(this, i, index, indexY);
+			p.run();
+			Launch.getConnectionMan().queueProcess(p, LogManager.out, new NullInputStream());
+			index++;
+			if (index > (imgSplit.length / 3)) {
+				indexY++;
+				index = 0;
+			}
+		}
 		// TODO write SplitImageProcessor class to take split image and resize it
 		// correctly, then return resized image
+
 	}
 
 	@Override
@@ -157,6 +184,10 @@ public class module extends terra.shell.modules.Module {
 
 	public void imgProcComplete() {
 		imgCheckComplete++;
+	}
+
+	public void addResizedSplitImage(BufferedImage img, int x, int y) {
+		resizedImgSplit[x][y] = img;
 	}
 
 }
