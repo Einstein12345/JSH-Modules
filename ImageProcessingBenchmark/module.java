@@ -104,17 +104,30 @@ public class module extends terra.shell.modules.Module {
 			return;
 		}
 		// FIXME Check this math, its likely wrong
-		BufferedImage[] imgSplit = new BufferedImage[availableCores.size()];
+		int numCores = availableCores.size();
+		BufferedImage[] imgSplit = new BufferedImage[numCores];
 		// resizedImgSplit is two dimensional array representing image locations
 		// Because we are splitting the image into 3 rows, our columns are then
 		// (availableCores/3). So maxX = (availableCores/3), maxY = 3
 
-		// FIXME THis fails to deal with cases in which the availableCores amount is not
-		// divisible by 3 evenly, possibly just round it down and make it even to avoid
-		// this entirely
-		resizedImgSplit = new BufferedImage[imgSplit.length / 3][3];
-		int splitWidth = img.getWidth() / (imgSplit.length / 3);
-		int splitHeight = img.getHeight() / 3;
+		// Calculate column and row size by finding closest factors of numCores
+		// Worst edge case is a prime number, which takes O(sqrt(n)) time
+		int column = 1, row = 1;
+		int sqrtCoreNumber = (int) Math.sqrt(numCores);
+		if ((numCores % sqrtCoreNumber) == 0) {
+			column = sqrtCoreNumber;
+			row = numCores / sqrtCoreNumber;
+		} else {
+			while (numCores % sqrtCoreNumber != 0) {
+				sqrtCoreNumber -= 1;
+			}
+			column = sqrtCoreNumber;
+			row = numCores / sqrtCoreNumber;
+		}
+
+		resizedImgSplit = new BufferedImage[column][row];
+		int splitWidth = img.getWidth() / column;
+		int splitHeight = img.getHeight() / row;
 		// FIXME (DONE) Image split should be done so that availableCores represents
 		// TOTAL
 		// number of images created, rather than how it is now which creates
