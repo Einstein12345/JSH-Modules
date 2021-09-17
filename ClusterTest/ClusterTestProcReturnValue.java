@@ -3,8 +3,9 @@ package ClusterTest;
 import terra.shell.utils.JProcess;
 import terra.shell.utils.ReturnValue;
 
-public final class ClusterTestProcReturnValue extends ReturnValue {
+public final class ClusterTestProcReturnValue extends ReturnValue<Object[]> {
 	protected Object[] values;
+
 	public ClusterTestProcReturnValue(JProcess p) {
 		super(p);
 	}
@@ -27,5 +28,5 @@ public final class ClusterTestProcReturnValue extends ReturnValue {
 	public Object[] getReturnValue() {
 		return values;
 	}
-	
+
 }

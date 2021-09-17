@@ -27,7 +27,7 @@ public class ClusterTestProc extends JProcess {
 
 	@Override
 	public boolean start() {
-		rv.setValues(this.getUUID(), this.getSUID());
+		rv.setValues(new Object[] { this.getUUID(), this.getSUID() });
 		getLogger().log("Process started");
 		getLogger().log("My UUID is: " + rv.getReturnValue()[0]);
 		getLogger().log("My SUID is: " + rv.getReturnValue()[1]);
