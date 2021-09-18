@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import terra.shell.launch.Launch;
 import terra.shell.logging.LogManager;
 import terra.shell.modules.ModuleEvent.DummyEvent;
+import terra.shell.utils.keys.Event;
 import terra.shell.utils.streams.NullInputStream;
 
 public class module extends terra.shell.modules.Module {
@@ -183,12 +184,14 @@ public class module extends terra.shell.modules.Module {
 	}
 
 	@Override
-	public void trigger(DummyEvent event) {
-		ProcessorCheckProcess p = new ProcessorCheckProcess(this);
-		p.run();
-		Launch.getConnectionMan().sendToAll(p, LogManager.out, new NullInputStream());
-		started = true;
-		numNodes = Launch.getConnectionMan().numberOfNodes();
+	public void trigger(Event event) {
+		if (event instanceof DummyEvent) {
+			ProcessorCheckProcess p = new ProcessorCheckProcess(this);
+			p.run();
+			Launch.getConnectionMan().sendToAll(p, LogManager.out, new NullInputStream());
+			started = true;
+			numNodes = Launch.getConnectionMan().numberOfNodes();
+		}
 	}
 
 	public void addNumCores(Inet4Address ip, Integer num) {

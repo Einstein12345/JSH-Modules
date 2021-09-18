@@ -6,8 +6,7 @@ import java.io.FileOutputStream;
 import terra.shell.launch.Launch;
 import terra.shell.modules.Module;
 import terra.shell.modules.ModuleEvent.DummyEvent;
-import terra.shell.utils.JProcess;
-import terra.shell.utils.JProcess.Depends;
+import terra.shell.utils.keys.Event;
 import terra.shell.utils.streams.NullInputStream;
 
 public class module extends Module {
@@ -47,17 +46,20 @@ public class module extends Module {
 	}
 
 	@Override
-	public void trigger(DummyEvent event) {
+	public void trigger(Event event) {
 		log.debug("Triggered");
-		if (event.getME().getArgs()[0].toString().equals("Run")) {
-			ClusterTestProc p = new ClusterTestProc();
-			p.run();
-			try {
-				Launch.getConnectionMan().sendToAll(p,
-						new FileOutputStream(new File(Launch.getConfD(), "ClusterTestResults.txt")),
-						new NullInputStream());
-			} catch (Exception e) {
-				e.printStackTrace();
+		if (event instanceof DummyEvent) {
+			DummyEvent dummyEvent = (DummyEvent) event;
+			if (dummyEvent.getME().getArgs()[0].toString().equals("Run")) {
+				ClusterTestProc p = new ClusterTestProc();
+				p.run();
+				try {
+					Launch.getConnectionMan().sendToAll(p,
+							new FileOutputStream(new File(Launch.getConfD(), "ClusterTestResults.txt")),
+							new NullInputStream());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

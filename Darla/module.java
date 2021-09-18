@@ -23,8 +23,8 @@ import java.util.zip.ZipFile;
 import terra.shell.config.Configuration;
 import terra.shell.launch.Launch;
 import terra.shell.modules.Module;
-import terra.shell.modules.ModuleEvent.DummyEvent;
 import terra.shell.utils.JProcess;
+import terra.shell.utils.keys.Event;
 import terra.shell.utils.system.ByteClassLoader;
 
 public class module extends Module {
@@ -494,7 +494,7 @@ public class module extends Module {
 	}
 
 	@Override
-	public void trigger(DummyEvent event) {
+	public void trigger(Event event) {
 		// TODO Auto-generated method stub
 
 	}

@@ -12,7 +12,7 @@ import be.tarsos.dsp.filters.BandPass;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import be.tarsos.dsp.io.jvm.JVMAudioInputStream;
 import terra.shell.modules.Module;
-import terra.shell.modules.ModuleEvent.DummyEvent;
+import terra.shell.utils.keys.Event;
 
 public class module extends Module {
 
@@ -94,7 +94,7 @@ public class module extends Module {
 	}
 
 	@Override
-	public void trigger(DummyEvent event) {
+	public void trigger(Event event) {
 		// TODO Auto-generated method stub
 
 	}
