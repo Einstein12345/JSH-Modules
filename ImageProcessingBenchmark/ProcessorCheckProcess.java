@@ -1,23 +1,31 @@
 package ImageProcessingBenchmark;
 
+import terra.shell.logging.LogManager;
 import terra.shell.utils.JProcess;
 import terra.shell.utils.JProcess.Depends;
 import terra.shell.utils.JProcess.ReturnType;
 import terra.shell.utils.ReturnValue;
 
-@Depends(dependencies = ProcessorCheckReturnValue.class)
+@Depends(dependencies = { ProcessorCheckReturnValue.class, module.class, ImageProcessor.class,
+		ImageProcessorReturnValue.class, SplitImageProcessor.class, SplitImageProcessorReturnValue.class })
 @ReturnType(getReturnType = terra.shell.utils.system.ReturnType.ASYNCHRONOUS)
 public class ProcessorCheckProcess extends JProcess {
 
-	ProcessorCheckReturnValue rv;
+	private ProcessorCheckReturnValue rv;
+	private module m;
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3950880510819802732L;
 
-	public ProcessorCheckProcess(module m) {
+	public ProcessorCheckProcess() {
+		super();
+	}
 
+	public ProcessorCheckProcess(module m) {
+		super();
+		this.m = m;
 	}
 
 	@Override
@@ -27,25 +35,28 @@ public class ProcessorCheckProcess extends JProcess {
 
 	@Override
 	public boolean start() {
+		if (rv != null)
+			rv.setValues(Runtime.getRuntime().availableProcessors());
+		else {
+			m.addNumCores(Runtime.getRuntime().availableProcessors());
+		}
 		return true;
 	}
 
 	@Override
 	public void processReturn(ReturnValue rv) {
-
+		getLogger().log("Got ReturnValue");
+		m.addNumCores((int) rv.getReturnValue());
 	}
 
 	@Override
 	public void createReturn() {
-		rv = new ProcessorCheckReturnValue(this);
-
+		if (rv == null)
+			rv = new ProcessorCheckReturnValue(this);
 	}
 
 	@Override
 	public ReturnValue<Integer> getReturn() {
-		if (rv == null) {
-			createReturn();
-		}
 		return rv;
 	}
 

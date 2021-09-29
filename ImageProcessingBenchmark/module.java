@@ -2,12 +2,12 @@ package ImageProcessingBenchmark;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.net.Inet4Address;
+import java.io.OutputStream;
 import java.net.URL;
-import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import terra.shell.emulation.concurrency.helper.SerializableImage;
 import terra.shell.launch.Launch;
 import terra.shell.logging.LogManager;
 import terra.shell.modules.ModuleEvent.DummyEvent;
@@ -16,22 +16,27 @@ import terra.shell.utils.streams.NullInputStream;
 
 public class module extends terra.shell.modules.Module {
 
-	private Hashtable<Inet4Address, Integer> availableCores;
+	private int availableCores, returnedNodes;
 	private boolean started = false;
 	private int numNodes = -1;
 	private int imgCheckComplete = 0;
-	private BufferedImage[][] resizedImgSplit;
+	private SerializableImage[][] resizedImgSplit;
 
 	@Override
 	public String getName() {
-		return "ImageProcessing Benchmark Module";
+		return "IPBM";
 	}
 
 	@Override
 	public void run() {
+		log.setOutputStream(LogManager.out);
+		log.log("Started Benchmark");
+		availableCores = 0;
 		while (!started) {
 			try {
-				Thread.sleep(100);
+				synchronized (Thread.currentThread()) {
+					Thread.currentThread().wait(100);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				return;
@@ -40,9 +45,11 @@ public class module extends terra.shell.modules.Module {
 		log.log("Starting Image Processing Benchmark...");
 		log.log("Gathering network node resource info");
 		final long startTimeProcessorCheck = System.currentTimeMillis();
-		while (availableCores.size() != numNodes) {
+		while (returnedNodes != numNodes) {
 			try {
-				Thread.sleep(20);
+				synchronized (Thread.currentThread()) {
+					Thread.currentThread().wait(20);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -52,12 +59,9 @@ public class module extends terra.shell.modules.Module {
 		log.log("ProcessorCheck took " + diffTimeProcessorCheck + " milliseconds");
 		log.log("Found " + availableCores + " total cores on network");
 		log.log("Attempting to load reference image");
-		BufferedImage img;
+		SerializableImage img;
 		try {
-			img = ImageIO.read(new URL("https://i.imgur.com/BHPUd0d.jpg"));
-			if (img == null) {
-				throw new NullPointerException("Image is null");
-			}
+			img = new SerializableImage(ImageIO.read(new URL("https://i.imgur.com/BHPUd0d.jpg")));
 			log.log("Got reference image");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,10 +72,12 @@ public class module extends terra.shell.modules.Module {
 				+ " cores");
 		final long startTimeImageProcessor = System.currentTimeMillis();
 		imgProc.run();
-		Launch.getConnectionMan().sendToAll(imgProc, LogManager.out, new NullInputStream());
+		Launch.getConnectionMan().sendToAll(imgProc, OutputStream.nullOutputStream(), new NullInputStream());
 		while (imgCheckComplete != numNodes) {
 			try {
-				Thread.sleep(20);
+				synchronized (Thread.currentThread()) {
+					Thread.currentThread().wait(20);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				return;
@@ -83,8 +89,9 @@ public class module extends terra.shell.modules.Module {
 		log.log("Beginning local only resize test...");
 		// TODO Complete image resize operation for each
 		final long startTimeLocalResize = System.currentTimeMillis();
-		for (int i = 0; i < availableCores.size(); i++) {
-			img.getScaledInstance(img.getHeight() / 4, img.getWidth() / 4, Image.SCALE_SMOOTH);
+		for (int i = 0; i < availableCores; i++) {
+			log.log("Scaled " + i + " times");
+			new LocalImageResizer(img).start();
 		}
 		final long endTimeLocalResize = System.currentTimeMillis();
 		final long diffTimeLocalResize = endTimeLocalResize - startTimeLocalResize;
@@ -95,17 +102,14 @@ public class module extends terra.shell.modules.Module {
 		System.gc();
 
 		try {
-			img = ImageIO.read(new URL("https://wallpaperaccess.com/full/82311.jpg"));
-			if (img == null) {
-				throw new NullPointerException("Image is null");
-			}
+			img = new SerializableImage(ImageIO.read(new URL("https://wallpaperaccess.com/full/82311.jpg")));
 			log.log("Got reference image");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
 		// FIXME Check this math, its likely wrong
-		int numCores = availableCores.size();
+		int numCores = availableCores;
 		BufferedImage[] imgSplit = new BufferedImage[numCores];
 		// resizedImgSplit is two dimensional array representing image locations
 		// Because we are splitting the image into 3 rows, our columns are then
@@ -126,9 +130,9 @@ public class module extends terra.shell.modules.Module {
 			row = numCores / sqrtCoreNumber;
 		}
 
-		resizedImgSplit = new BufferedImage[column][row];
-		int splitWidth = img.getWidth() / column;
-		int splitHeight = img.getHeight() / row;
+		resizedImgSplit = new SerializableImage[column][row];
+		int splitWidth = img.getWidth(null) / column;
+		int splitHeight = img.getHeight(null) / row;
 		// FIXME (DONE) Image split should be done so that availableCores represents
 		// TOTAL
 		// number of images created, rather than how it is now which creates
@@ -151,7 +155,7 @@ public class module extends terra.shell.modules.Module {
 		for (BufferedImage i : imgSplit) {
 			SplitImageProcessor p = new SplitImageProcessor(this, i, index, indexY);
 			p.run();
-			Launch.getConnectionMan().queueProcess(p, LogManager.out, new NullInputStream());
+			Launch.getConnectionMan().queueProcess(p, OutputStream.nullOutputStream(), new NullInputStream());
 			index++;
 			if (index > (imgSplit.length / 3)) {
 				indexY++;
@@ -180,7 +184,7 @@ public class module extends terra.shell.modules.Module {
 
 	@Override
 	public void onEnable() {
-
+		log.log("Enabled IPBM");
 	}
 
 	@Override
@@ -188,21 +192,23 @@ public class module extends terra.shell.modules.Module {
 		if (event instanceof DummyEvent) {
 			ProcessorCheckProcess p = new ProcessorCheckProcess(this);
 			p.run();
-			Launch.getConnectionMan().sendToAll(p, LogManager.out, new NullInputStream());
+			Launch.getConnectionMan().sendToAll(p, OutputStream.nullOutputStream(), new NullInputStream());
 			started = true;
-			numNodes = Launch.getConnectionMan().numberOfNodes();
+			numNodes = Launch.getConnectionMan().numberOfNodes() + 1;
 		}
 	}
 
-	public void addNumCores(Inet4Address ip, Integer num) {
-		availableCores.put(ip, num);
+	public synchronized void addNumCores(Integer num) {
+		log.log("Got " + num + "cores");
+		availableCores += num;
+		returnedNodes++;
 	}
 
-	public void imgProcComplete() {
+	public synchronized void imgProcComplete() {
 		imgCheckComplete++;
 	}
 
-	public void addResizedSplitImage(BufferedImage img, int x, int y) {
+	public synchronized void addResizedSplitImage(SerializableImage img, int x, int y) {
 		resizedImgSplit[x][y] = img;
 	}
 
